@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confession: Anonymous Confessions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #764ba2;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .confession-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .confession-form textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            resize: vertical;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .confession-form input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .confession-form button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .confession-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .confession-text {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .confession-meta {
+            font-size: 14px;
+            color: #6c757d;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Anonymous Confessions</h1>
+        
+        <div class="confession-form">
+            <textarea id="confessionText" placeholder="Write your anonymous confession here..."></textarea>
+            <input type="email" id="recipientEmail" placeholder="Recipient's email *" required>
+            <div id="emailError" class="error"></div>
+            <button onclick="sendConfession()">Send Confession Anonymously</button>
+        </div>
+
+        <div id="confessionsContainer" class="confessions-container">
+            <!-- Confessions will appear here -->
+        </div>
+    </div>
+
+    <script>
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function sendConfession() {
+            const text = document.getElementById('confessionText').value;
+            const email = document.getElementById('recipientEmail').value;
+            const errorElement = document.getElementById('emailError');
+            
+            // Clear previous errors
+            errorElement.textContent = '';
+            
+            // Validation
+            if (!text.trim()) {
+                alert('Please write a confession before sending!');
+                return;
+            }
+            
+            if (!email.trim()) {
+                errorElement.textContent = 'Email is required!';
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                errorElement.textContent = 'Please enter a valid email address!';
+                return;
+            }
+            
+            // Create confession card
+            const confession = {
+                text: text,
+                recipient: email,
+                timestamp: new Date().toLocaleString()
+            };
+            
+            displayConfession(confession);
+            
+            // Clear form
+            document.getElementById('confessionText').value = '';
+            document.getElementById('recipientEmail').value = '';
+        }
+
+        function displayConfession(confession) {
+            const container = document.getElementById('confessionsContainer');
+            const confessionHTML = `
+                <div class="confession-card">
+                    <div class="confession-text">${confession.text}</div>
+                    <div class="confession-meta">
+                        <span>To: ${confession.recipient}</span>
+                        <span>${confession.timestamp}</span>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = confessionHTML + container.innerHTML;
+        }
+    </script>
+</body>
+</html>
